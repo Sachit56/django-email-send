@@ -1,4 +1,4 @@
-#!/home/sachitkhadka/Documents/django-email-send/django-email-send/env/bin/python
+#!/home/sachitkhadka/Documents/django-email-sender/env/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys
