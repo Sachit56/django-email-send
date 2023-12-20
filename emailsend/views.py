@@ -30,21 +30,26 @@ from django.core.mail import get_connection, send_mail
 from django.conf import settings
 from django.shortcuts import render, redirect
 from .forms import EmailForm
+import os
+from dotenv import load_dotenv
 
 def EmailView(request):
     if request.method == 'POST':
         form = EmailForm(request.POST)
 
         if form.is_valid():
+            print(os.environ.get('EMAIL_PORT'))
             name = form.cleaned_data['name']
             email = form.cleaned_data['email']
             content = form.cleaned_data['message']
 
+            
+
             # Establish a connection to the SMTP server
             connection = get_connection(
                 'django.core.mail.backends.smtp.EmailBackend',
-                username=settings.EMAIL_HOST_USER,
-                password=settings.EMAIL_HOST_PASSWORD,
+                username=os.environ.get('EMAIL_HOST_USER'),
+                password=os.environ.get('EMAIL_HOST_PASSWORD'),
                 fail_silently=False,
             )
 
@@ -56,7 +61,7 @@ def EmailView(request):
                 send_mail(
                     name,
                     content,
-                    settings.EMAIL_HOST_USER,
+                    os.environ.get('EMAIL_HOST_USER'),
                     [email],
                     fail_silently=False,
                     connection=connection,
@@ -69,5 +74,6 @@ def EmailView(request):
 
     else:
         form = EmailForm()
+        
 
     return render(request, 'emailsend/home.html', {'form': form})
