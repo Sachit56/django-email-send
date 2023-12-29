@@ -1,4 +1,4 @@
-from django.core.mail import get_connection, send_mail
+from django.core.mail import get_connection, send_mail,EmailMessage
 from django.conf import settings
 from django.shortcuts import render, redirect
 from .forms import EmailForm
@@ -11,9 +11,10 @@ def EmailView(request):
 
         if form.is_valid():
             print(os.environ.get('EMAIL_PORT'))
-            name = form.cleaned_data['name']
+            name = form.cleaned_data['subject']
             email = form.cleaned_data['email']
             content = form.cleaned_data['message']
+            attachment=form.cleaned_data['attachment']
 
             
 
@@ -30,14 +31,18 @@ def EmailView(request):
                 connection.open()
 
                 # Send the email using the established connection
-                send_mail(
+                email_message=EmailMessage(
                     name,
                     content,
                     os.environ.get('EMAIL_HOST_USER'),
                     [email],
-                    fail_silently=False,
+                    # fail_silently=False,
                     connection=connection,
                 )
+                if attachment:
+                    email_message.attach(attachment.name,attachment.read(),attachment.content_type)
+                email_message.send()    
+
             finally:
                 # Close the connection after sending the email
                 connection.close()
