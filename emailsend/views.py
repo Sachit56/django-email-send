@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 def EmailView(request):
     if request.method == 'POST':
-        form = EmailForm(request.POST)
+        form = EmailForm(request.POST,request.FILES)
 
         if form.is_valid():
             print(os.environ.get('EMAIL_PORT'))
@@ -38,14 +38,16 @@ def EmailView(request):
                     [email],
                     # fail_silently=False,
                     connection=connection,
-                )
+      )
                 if attachment:
                     email_message.attach(attachment.name,attachment.read(),attachment.content_type)
                 email_message.send()    
 
             finally:
                 # Close the connection after sending the email
-                connection.close()
+              connection.close()
+
+            print(request.FILES)     
 
             return redirect('emailsend:email')
 
