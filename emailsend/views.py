@@ -6,6 +6,7 @@ import os
 from dotenv import load_dotenv
 
 def EmailView(request):
+    
     if request.method == 'POST':
         form = EmailForm(request.POST,request.FILES)
 
